@@ -9,6 +9,8 @@ import math
 import os
 import numpy as np
 import random
+import pickle
+
 # import matplotlib.pyplot as plt
 from collections import namedtuple
 from collections import OrderedDict
@@ -16,8 +18,8 @@ from operator import itemgetter
 # from sklearn.decomposition import TruncatedSVD
 from scipy import sparse
 from sklearn.utils import shuffle
-from spartan import MinTree 
-import pickle as pickle
+from ...util.MinTree import MinTree
+
 # np.set_printoptions(threshold=numpy.nan)
 np.set_printoptions(linewidth=160)
 

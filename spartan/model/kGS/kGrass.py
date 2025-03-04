@@ -8,7 +8,8 @@ import scipy.sparse as ssp
 
 import spartan as st
 from .._model import DMmodel
-from spartan import STensor
+from ...tensor import STensor
+
 
 
 class kGS(DMmodel):
@@ -118,7 +119,7 @@ class kGS(DMmodel):
 
         self.nodes_dict = self.nodes_dict
         self.sm_s = sm_s
-
+        
         return STensor.from_scipy_sparse(sm_s)
 
     def _merge_loss(self, u, v):

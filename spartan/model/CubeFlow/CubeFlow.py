@@ -1,14 +1,11 @@
+import copy
 import numpy as np
-from .mytools.MinTree import MinTree
+from collections import defaultdict
 
 from .._model import DMmodel
-from ...util.basicutil import param_default
-import copy
-from collections import defaultdict
+from util.basicutil import param_default
+from util.MinTree import MinTree
 from .util import get_real_res, preprocess_data, loadtxt2res, saveres2txt, get_zero_matrix
-import pdb
-
-import sparse as sp
 
 class CubeFlow(DMmodel):
     '''Anomaly detection base on contrastively dense subgraphs, considering

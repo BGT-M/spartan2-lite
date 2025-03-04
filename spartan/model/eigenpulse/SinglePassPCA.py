@@ -1,8 +1,9 @@
+import math
 import numpy as np
+
 from scipy import sparse
 from scipy.linalg import svd
-import math
-from spartan.tensor import DTensor
+from ...tensor import DTensor
 
 
 def generateGH_by_multiply(A, Omg):

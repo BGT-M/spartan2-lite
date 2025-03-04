@@ -7,7 +7,7 @@
 
 # here put the import lib
 
-from spartan.backend import STensor, DTensor
+from ..backend import STensor, DTensor
 
 from .tensor import TensorData
 from .tensor import TensorData, TensorStream

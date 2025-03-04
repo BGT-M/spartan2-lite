@@ -1,22 +1,10 @@
-import sys, os, time
 import numpy as np
-from .mytools.MinTree import MinTree
 
 from .._model import DMmodel
-from ...util.basicutil import param_default
-from ...backend import STensor
+from ...util.MinTree import MinTree
+from ...util.graph_trans import del_block
 
-def del_block(M, rowSet ,colSet):
-    M = M.tolil()
-
-    (rs, cs) = M.nonzero()
-    for i in range(len(rs)):
-        if rs[i] in rowSet or cs[i] in colSet:
-            M[rs[i], cs[i]] = 0
-    return M.tolil()
-
-
-class FlowScope( DMmodel ):
+class FlowScope(DMmodel):
     '''Anomaly detection base on contrastively dense subgraphs, considering
     topological, temporal, and categorical (e.g. rating scores) signals, or
     any supported combinations.

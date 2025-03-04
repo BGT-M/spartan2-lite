@@ -10,7 +10,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
-from spartan.tensor import Graph, Timeseries
+from ..tensor import Graph, Timeseries
 
 # TODO do not import matplotlib function in model file
 
@@ -73,7 +73,6 @@ def plot_graph(graph: Graph, layout=None, bipartite=False, labels=None,
 
 
 def plot_timeseries(*args, **kwargs):
-    import matplotlib.pyplot as plt
     __plot_timeseries(plt, *args, **kwargs)
     plt.show()
 
@@ -143,7 +142,6 @@ def drawEigenPulse(densities: list = [], figpath: str = None):
 
 
 def __plot_beatlex(time_series, result):
-    import matplotlib.pyplot as plt
     models = result['models']
     plt = __plot_beatlex_vocabulary(plt, models)
     plt = __plot_beatlex_timeseries(plt, time_series, result)
@@ -187,7 +185,6 @@ def __plot_beatlex_timeseries(plt, series: Timeseries, result: dict):
 
 
 def __plot_beatgan(input, output, heat):
-    import matplotlib.pyplot as plt
     sig_in = input.transpose()
     sig_out = output.transpose()
     max_heat = np.max(heat)

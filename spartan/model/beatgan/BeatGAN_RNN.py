@@ -8,7 +8,7 @@ from .metric import evaluate
 from .preprocess import preprocess_data
 from .._model import MLmodel
 
-from .import param_default
+from ...util.basicutil import param_default
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

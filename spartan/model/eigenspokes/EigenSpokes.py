@@ -1,9 +1,8 @@
 import numpy as np
-from .._model import DMmodel
 import scipy.sparse.linalg as slin
-import numpy as np
 from scipy.sparse import csc_matrix, coo_matrix, csr_matrix, lil_matrix
 
+from .._model import DMmodel
 
 class EigenSpokes(DMmodel):
     def __init__(self, data_mat):

@@ -7,7 +7,7 @@
 
 # here put the import lib
 
-from spartan.util import MODEL_PATH
+from ..util import MODEL_PATH
 
 from functools import partial
 

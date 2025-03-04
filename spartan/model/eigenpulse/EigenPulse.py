@@ -2,10 +2,12 @@ from numpy import random
 
 from .SinglePassPCA import generateGH_by_multiply, generateQB, computeSVD
 from .util import calDensity, findSuspWins, filterEigenvec, getKeys
-from spartan.tensor import TensorData, DTensor
 from .._model import DMmodel
-from spartan.util.basicutil import StringMapper
-from spartan.util.drawutil import drawEigenPulse
+from ...tensor import TensorData, DTensor
+from ...util.basicutil import StringMapper
+from ...util.drawutil import drawEigenPulse
+
+
 
 
 class EigenPulse(DMmodel):

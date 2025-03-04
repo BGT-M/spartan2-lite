@@ -1,8 +1,6 @@
 import numpy as np
 from .._model import Generalmodel
-# import spartan2.ioutil as ioutil
-from spartan.util.ioutil import saveDictListData, loadDictListData
-
+from ...util.ioutil import saveDictListData, loadDictListData
 
 class IAT(Generalmodel):
     aggiat = {}  # key:user; value:iat list

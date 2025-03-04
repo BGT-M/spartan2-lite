@@ -1,5 +1,5 @@
-from spartan.util.basicutil import param_default
-from spartan.tensor import DTensor
+from ...util.basicutil import param_default
+from ...tensor import DTensor
 
 from .RPeak import RPeak
 

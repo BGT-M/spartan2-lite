@@ -8,7 +8,7 @@ import scipy.sparse.linalg as linalg
 import scipy.sparse
 
 # project
-from spartan.model.fraudar.greedy import logWeightedAveDegree, sqrtWeightedAveDegree, aveDegree, fast_greedy_decreasing_monosym
+from ..fraudar.greedy import logWeightedAveDegree, sqrtWeightedAveDegree,aveDegree,fast_greedy_decreasing_monosym
 from .._model import DMmodel
 
 

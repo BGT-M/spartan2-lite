@@ -1,8 +1,7 @@
 
-from torch.utils.data import DataLoader, Dataset
 import torch
-from . import param_default
-
+from torch.utils.data import DataLoader, Dataset
+from ...util.basicutil import param_default
 
 class MyDataSet(Dataset):
     def __init__(self, segments, labels):

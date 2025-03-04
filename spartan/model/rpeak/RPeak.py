@@ -1,7 +1,8 @@
 from biosppy.signals import ecg
 
 from .._model import DMmodel
-from . import param_default, DTensor
+from ...util.basicutil import param_default
+from ...tensor import DTensor
 
 param_default_dict = {
     'sampling_rate': 360,
