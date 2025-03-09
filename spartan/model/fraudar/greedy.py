@@ -10,6 +10,7 @@ import os
 import numpy as np
 import random
 import pickle
+import copy
 
 # import matplotlib.pyplot as plt
 from collections import namedtuple
@@ -134,7 +135,7 @@ def getRowFMeasure(pred, actual, idx):
     rec = getRowRecall(pred, actual, idx)
     return 0 if (prec + rec == 0) else (2 * prec * rec / (prec + rec))
 
-def sqrtWeightedAveDegree(M, maxsiz=-1):
+def sqrtWeightedAveDegree(M, maxsize=-1):
     m, n = M.shape
     colSums = M.sum(axis=0)
     colWeights = 1.0 / np.sqrt(np.squeeze(colSums.A) + 5)
