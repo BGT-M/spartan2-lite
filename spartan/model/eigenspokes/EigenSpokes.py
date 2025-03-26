@@ -1,34 +1,31 @@
 import numpy as np
 import scipy.sparse.linalg as slin
-from scipy.sparse import csc_matrix, coo_matrix, csr_matrix, lil_matrix
+from scipy.sparse import csc_matrix
 
 from .._model import DMmodel
 
 class EigenSpokes(DMmodel):
-    def __init__(self, data_mat):
-        self.data = data_mat
+    def __init__(self, data:csc_matrix):
+        self.data = data.asfptype()
 
     def run(self, k = 0, is_directed = False):
-        sparse_matrix = self.data.to_scipy()
-        sparse_matrix = sparse_matrix.asfptype()
-        RU, RS, RVt = slin.svds(sparse_matrix, k+3)
-        RV = np.transpose(RVt)
-        U, S, V = np.flip(RU, axis=1), np.flip(RS), np.flip(RV, axis=1)
 
-        m = U.shape[0]
-        n = V.shape[0]
+        U, S, Vt = slin.svds(self.data, k+3)
+        V = Vt.T
+        U, S, V = np.flipud(U), np.flip(S), np.flipud(V)
+        
+        x = U[:, k] * np.where(np.abs(U[:, k].min()) > np.abs(U[:, k].max()), -1, 1)
+        y = V[:, k] * np.where(np.abs(V[:, k].min()) > np.abs(V[:, k].max()), -1, 1)
+        
+        m, n = U.shape[0], V.shape[0]
+        x_thresh = 1/np.sqrt(m)
+        y_thresh = 1/np.sqrt(n)
+        
+        x_outliers = np.where(x > x_thresh)[0].tolist()
+        y_outliers = np.where(y > y_thresh)[0].tolist()
 
-        x = U[k] * -1 if np.abs(np.min(U[k])) > np.abs(np.max(U[k])) else U[k]
-        y = V[k] * -1 if np.abs(np.min(V[k])) > np.abs(np.max(V[k])) else V[k]
-
-        x_outliers = [index for index in range(len(x)) if x[index] > 1 / np.sqrt(m)]
-        y_outliers = [index for index in range(len(y)) if y[index] > 1 / np.sqrt(n)]
- 
-        if is_directed:
-            return (x_outliers, y_outliers)
-        else:
-            return x_outliers
-    
+        return (x_outliers, y_outliers) if is_directed else x_outliers
+        
     
     def anomaly_detection(self):
         return self.run()
