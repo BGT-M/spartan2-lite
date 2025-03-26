@@ -1,46 +1,48 @@
 import numpy as np
-import scipy.sparse.linalg as slin
-from scipy.sparse import csc_matrix, coo_matrix, csr_matrix, lil_matrix
+from scipy.sparse import csr_matrix, lil_matrix
 
 from .._model import DMmodel
-from .greedy import logWeightedAveDegree
-
+from ..greedy import greeedy_bipartite
 
 class Fraudar(DMmodel):
-    def __init__(self, data_mat):
-        self.data = data_mat
-
-    def run(self, out_path = "./", file_name = "out", k = 1, maxsize = -1):
-        sparse_matrix = self.data.to_scipy()
-        sparse_matrix = sparse_matrix.asfptype()
-        Mcur = sparse_matrix.copy().tolil()
-        res = []
-        t = 0
-        while (t < k):
-            set_row, set_col, score = logWeightedAveDegree(Mcur, maxsize = maxsize)
-            list_row, list_col = list(set_row), list(set_col)
-            print("Fraudar iter %s finished." % t)
-            print("n_row", len(list_row), "n_col:", len(list_col))
-            print("score obtained is ", score)
-
-            np.savetxt("%s_%s.rows" % (out_path + file_name, t), np.array(list_row).reshape(-1, 1), fmt='%d')
-            np.savetxt("%s_%s.cols" % (out_path + file_name, t), np.array(list_col).reshape(-1, 1), fmt='%d')
-            
-            t += 1
-
-            if (t >= k):
-                break
-            
-            (rs, cs) = Mcur.nonzero() # (u, v)
-            ## only delete inner connections
-            rowSet = set(list_row)
-            colSet = set(list_col)
-            for i in range(len(rs)):
-                if rs[i] in rowSet and cs[i] in colSet:
-                    Mcur[rs[i], cs[i]] = 0
+    def __init__(self, data:csr_matrix, log="col", bipartite=True):
+        self.data = data
+        self.log = log
+        self.bipartite = bipartite
+    
+    def run(self):
+        adj = self.data.tolil()
+        if self == "col":
+            weight_matrix = log_weighted_col(adj)
+        else:
+            weight_matrix = log_weighted_row(adj)
+        row, col, score = greeedy_bipartite(weight_matrix)
+        if self.bipartite:
+            res = sorted(row.union(col))
+        else:
+            res = [sorted(row), sorted(col)]
+        
+        return res, score
     
     def anomaly_detection(self):
         return self.run()
 
     def save(self, outpath):
         pass
+
+def log_weighted_col(graph:csr_matrix, eps=5):
+    # M: scipy sparse matrix
+    m, n = graph.shape
+    col_sums = graph.sum(axis=0)
+    col_weights = 1.0 / np.log(np.squeeze(col_sums.A) + eps)
+    col_diag = lil_matrix((n, n))
+    col_diag.setdiag(col_weights)
+    return graph * col_diag
+
+def log_weighted_row(graph:csr_matrix, eps=5):
+    m, n = graph.shape
+    row_sums = graph.sum(axis=1)
+    row_weights = 1.0 / np.log(np.squeeze(row_sums.A) + eps)
+    row_diag = lil_matrix((m, m))
+    row_diag.setdiag(row_weights)
+    return graph * row_diag

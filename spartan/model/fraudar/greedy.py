@@ -21,6 +21,8 @@ from scipy import sparse
 from sklearn.utils import shuffle
 from ...util.MinTree import MinTree
 
+from scipy.sparse import csr_matrix, lil_matrix
+
 # np.set_printoptions(threshold=numpy.nan)
 np.set_printoptions(linewidth=160)
 
@@ -154,6 +156,24 @@ def logWeightedAveDegree(M, maxsize=-1):
     print("finished computing weight matrix")
     return fastGreedyDecreasing(W, colWeights, maxsize)
 
+def log_weighted_col(graph:csr_matrix, eps=5):
+    # M: scipy sparse matrix
+    m, n = graph.shape
+    col_sums = graph.sum(axis=0)
+    col_weights = 1.0 / np.log(np.squeeze(col_sums.A) + eps)
+    col_diag = lil_matrix((n, n))
+    col_diag.setdiag(col_weights)
+    return graph * col_diag
+
+def log_weighted_row(graph:csr_matrix, eps=5):
+    m, n = graph.shape
+    row_sums = graph.sum(axis=1)
+    row_weights = 1.0 / np.log(np.squeeze(row_sums.A) + eps)
+    row_diag = lil_matrix((m, m))
+    row_diag.setdiag(row_weights)
+    return graph * row_diag
+
+
 def aveDegree(M, maxsize=-1):
     m, n = M.shape
     return fastGreedyDecreasing(M, [1] * n, maxsize)
@@ -246,53 +266,5 @@ def fastGreedyDecreasing(M, colWeights, maxsize=-1):
             finalColSet.remove(deleted[i][1])
     return (finalRowSet, finalColSet, bestAveScore)
 
-def fast_greedy_decreasing_monosym(mat):
-    # return the subgraph with optimal (weighted) degree density using Charikai's greedy algorithm
-    (m, n) = mat.shape
-    #uprint((m, n))
-    assert m == n
-    ml = mat.tolil()
-    node_set = set(range(0, m))
-    # print(len(node_set))
-    final_ = copy.copy(node_set)
-    
-    cur_score = c2score(mat, node_set, node_set)
-    best_avgscore = cur_score * 1.0 / len(node_set)
-    # best_sets = node_set
-    #print("finished setting up greedy, init score: {}".format(best_avgscore / 2.0))
 
-    # *decrease* in total weight when *removing* this row / column
-    delta = np.squeeze(1.0*mat.sum(axis=1).A)
-    tree = PriorQueMin(delta)
-    #print("finished building min trees")
-
-    n_dels = 0
-    deleted = list()
-    best_n_dels = 0
-
-    while len(node_set) > 1:
-        if len(node_set) % 500000 == 0:
-            print("   PROC: current set size = {}".format(len(node_set)))
-        (delidx_, delt_) = tree.getMin()
-        cur_score -= delt_ * 2
-        for j in ml.rows[delidx_]:   # remove this row / column
-            tree.changeVal(j, -1.0 * ml[delidx_, j])
-
-        tree.changeVal(delidx_, float('inf'))
-        node_set -= {delidx_}
-        deleted.append(delidx_)
-
-        n_dels += 1
-        if n_dels < n:
-            cur_avgscore = cur_score * 1.0 / len(node_set)
-            if cur_avgscore > best_avgscore:
-                best_avgscore = cur_avgscore
-                best_n_dels = n_dels
-
-    # reconstruct the best row and column sets
-    for i in range(best_n_dels):
-        nd_id = deleted[i]
-        final_.remove(nd_id)
-
-    return list(final_), list(final_), best_avgscore
 
