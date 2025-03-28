@@ -3,7 +3,7 @@ import numpy as np
 import scipy as sci
 from scipy.sparse import coo_matrix, csc_matrix
 # from gendenseblock import *
-from .mytools.ioutil import myreadfile
+from ...util.utility import myreadfile
 import math
 from spartan.backend import STensor, DTensor
 

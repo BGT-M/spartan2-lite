@@ -4,7 +4,7 @@ import random
 import numpy.random as nr
 import scipy.linalg as sla
 # from .mytools.ioutil import *
-from .mytools.ioutil import loadedge2sm, loadDictListData, loadDictListData, saveDictListData, savesm2edgelist, saveSimpleListData
+from ...util.utility import loadedge2sm, loadDictListData, loadDictListData, saveDictListData, savesm2edgelist, saveSimpleListData
 from scipy.sparse import coo_matrix
 
 def genEvenDenseBlock(A, B, p):

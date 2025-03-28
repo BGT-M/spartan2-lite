@@ -1,6 +1,8 @@
-import os,sys
-from scipy.sparse import csc_matrix, coo_matrix, csr_matrix, lil_matrix
+import os
+import sys
+import numpy as np
 
+from scipy.sparse import coo_matrix, csc_matrix
 
 def checkfilegz(name):
     if os.path.isfile(name):
@@ -229,9 +231,3 @@ def savesm2edgelist(sm, ofile, idstartzero=True, delimiter=' ', kformat=None):
             i+=1
         fout.close()
     return
-
-
-if __name__== "__main__":
-    path= './testdata/'
-    ifile = path+"yelp.edgelist"
-    sm = loadedge2sm(ifile, csr_matrix, idstartzero=True)

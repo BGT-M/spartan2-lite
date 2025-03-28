@@ -3,7 +3,7 @@ import numpy as np
 import scipy.sparse.linalg as slin
 from scipy.sparse import coo_matrix, csr_matrix, csc_matrix
 from svddenseblock import *
-from mytools.ioutil import myreadfile
+from ...util.utility import myreadfile
 from os.path import expanduser
 home = expanduser("~")
 

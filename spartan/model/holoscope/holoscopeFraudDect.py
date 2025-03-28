@@ -5,7 +5,7 @@ import scipy.stats as ss
 import scipy.sparse.linalg as slin
 import copy
 from scipy.sparse import coo_matrix, csr_matrix, lil_matrix
-from .mytools.ioutil import loadedge2sm
+from ...util.utility import loadedge2sm
 from .edgepropertyAnalysis import MultiEedgePropBiGraph
 import math
 from .._model import DMmodel
