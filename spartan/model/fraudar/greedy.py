@@ -3,25 +3,13 @@
 # which returns ((rowSet, colSet), score) for the most suspicious block.
 
 from __future__ import division
-import json
-import time
-import math
-import os
-import numpy as np
-import random
-import pickle
-import copy
 
-# import matplotlib.pyplot as plt
-from collections import namedtuple
-from collections import OrderedDict
-from operator import itemgetter
+import numpy as np
 # from sklearn.decomposition import TruncatedSVD
 from scipy import sparse
-from sklearn.utils import shuffle
 from ...util.MinTree import MinTree
 
-from scipy.sparse import csr_matrix, lil_matrix
+from ...metric.genmetric import c2Score
 
 # np.set_printoptions(threshold=numpy.nan)
 np.set_printoptions(linewidth=160)
@@ -34,12 +22,6 @@ def listToSparseMatrix(edgesSource, edgesDest):
     M = sparse.coo_matrix(([1]*len(edgesSource), (edgesSource, edgesDest)), shape=(m, n))
     M1 = M > 0
     return M1.astype('int')
-
-# randomly shuffle the rows and columns
-def shuffleMatrix(M):
-    M = shuffle(M)
-    return shuffle(M.transpose()).transpose()
-
 
 # reads matrix from file and returns sparse matrix. first 2 columns should be row and column indices
 # of ones.
@@ -68,74 +50,6 @@ def detectMultiple(M, detectFunc, numToDetect):
                 Mcur[rs[i], cs[i]] = 0
     return res
 
-def injectCliqueCamo(M, m0, n0, p, testIdx):
-    (m,n) = M.shape
-    M2 = M.copy().tolil()
-
-    colSum = np.squeeze(M2.sum(axis = 0).A)
-    colSumPart = colSum[n0:n]
-    colSumPartPro = np.int_(colSumPart)
-    colIdx = np.arange(n0, n, 1)
-    population = np.repeat(colIdx, colSumPartPro, axis = 0)
-
-    for i in range(m0):
-        # inject clique
-        for j in range(n0):
-            if random.random() < p:
-                M2[i,j] = 1
-        # inject camo
-        if testIdx == 1:
-            thres = p * n0 / (n - n0)
-            for j in range(n0, n):
-                if random.random() < thres:
-                    M2[i,j] = 1
-        if testIdx == 2:
-            thres = 2 * p * n0 / (n - n0)
-            for j in range(n0, n):
-                if random.random() < thres:
-                    M2[i,j] = 1
-        # biased camo
-        if testIdx == 3:
-            colRplmt = random.sample(population, int(n0 * p))
-            M2[i,colRplmt] = 1
-
-    return M2.tocsc()
-
-# compute score as sum of 1- and 2- term interactions (currently just sum of matrix entries)
-def c2Score(M, rowSet, colSet):
-    return M[list(rowSet),:][:,list(colSet)].sum(axis=None)
-
-
-def jaccard(pred, actual):
-    intersectSize = len(set.intersection(pred[0], actual[0])) + len(set.intersection(pred[1], actual[1]))
-    unionSize = len(set.union(pred[0], actual[0])) + len(set.union(pred[1], actual[1]))
-    return intersectSize / unionSize
-
-def getPrecision(pred, actual):
-    intersectSize = len(set.intersection(pred[0], actual[0])) + len(set.intersection(pred[1], actual[1]))
-    return intersectSize / (len(pred[0]) + len(pred[1]))
-
-def getRecall(pred, actual):
-    intersectSize = len(set.intersection(pred[0], actual[0])) + len(set.intersection(pred[1], actual[1]))
-    return intersectSize / (len(actual[0]) + len(actual[1]))
-
-def getFMeasure(pred, actual):
-    prec = getPrecision(pred, actual)
-    rec = getRecall(pred, actual)
-    return 0 if (prec + rec == 0) else (2 * prec * rec / (prec + rec))
-
-def getRowPrecision(pred, actual, idx):
-    intersectSize = len(set.intersection(pred[idx], actual[idx]))
-    return intersectSize / len(pred[idx])
-
-def getRowRecall(pred, actual, idx):
-    intersectSize = len(set.intersection(pred[idx], actual[idx]))
-    return intersectSize / len(actual[idx])
-
-def getRowFMeasure(pred, actual, idx):
-    prec = getRowPrecision(pred, actual, idx)
-    rec = getRowRecall(pred, actual, idx)
-    return 0 if (prec + rec == 0) else (2 * prec * rec / (prec + rec))
 
 def sqrtWeightedAveDegree(M, maxsize=-1):
     m, n = M.shape
@@ -160,19 +74,6 @@ def logWeightedAveDegree(M, maxsize=-1):
 def aveDegree(M, maxsize=-1):
     m, n = M.shape
     return fastGreedyDecreasing(M, [1] * n, maxsize)
-
-def subsetAboveDegree(M, col_thres, row_thres):
-    M = M.tocsc()
-    (m, n) = M.shape
-    colSums = np.squeeze(np.array(M.sum(axis=0)))
-    rowSums = np.squeeze(np.array(M.sum(axis=1)))
-    colValid = colSums > col_thres
-    rowValid = rowSums > row_thres
-    M1 = M[:, colValid].tocsr()
-    M2 = M1[rowValid, :]
-    rowFilter = [i for i in range(m) if rowValid[i]]
-    colFilter = [i for i in range(n) if colValid[i]]
-    return M2, rowFilter, colFilter
 
 
 # @profile
