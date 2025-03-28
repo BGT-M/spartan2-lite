@@ -156,23 +156,6 @@ def logWeightedAveDegree(M, maxsize=-1):
     print("finished computing weight matrix")
     return fastGreedyDecreasing(W, colWeights, maxsize)
 
-def log_weighted_col(graph:csr_matrix, eps=5):
-    # M: scipy sparse matrix
-    m, n = graph.shape
-    col_sums = graph.sum(axis=0)
-    col_weights = 1.0 / np.log(np.squeeze(col_sums.A) + eps)
-    col_diag = lil_matrix((n, n))
-    col_diag.setdiag(col_weights)
-    return graph * col_diag
-
-def log_weighted_row(graph:csr_matrix, eps=5):
-    m, n = graph.shape
-    row_sums = graph.sum(axis=1)
-    row_weights = 1.0 / np.log(np.squeeze(row_sums.A) + eps)
-    row_diag = lil_matrix((m, m))
-    row_diag.setdiag(row_weights)
-    return graph * row_diag
-
 
 def aveDegree(M, maxsize=-1):
     m, n = M.shape

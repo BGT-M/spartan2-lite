@@ -18,8 +18,8 @@ class EigenSpokes(DMmodel):
         y = V[:, k] * np.where(np.abs(V[:, k].min()) > np.abs(V[:, k].max()), -1, 1)
         
         m, n = U.shape[0], V.shape[0]
-        x_thresh = 1/np.sqrt(m)
-        y_thresh = 1/np.sqrt(n)
+        x_thresh = 1 / np.sqrt(m)
+        y_thresh = 1 / np.sqrt(n)
         
         x_outliers = np.where(x > x_thresh)[0].tolist()
         y_outliers = np.where(y > y_thresh)[0].tolist()

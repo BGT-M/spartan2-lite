@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.sparse import csr_matrix, lil_matrix
+from scipy.sparse import csr_matrix, lil_matrix, diags
 
 from .._model import DMmodel
 from ..greedy import greeedy_bipartite
@@ -12,11 +12,12 @@ class Fraudar(DMmodel):
     
     def run(self):
         adj = self.data.tolil()
-        if self == "col":
+        if self.log == "col":
             weight_matrix = log_weighted_col(adj)
         else:
             weight_matrix = log_weighted_row(adj)
         row, col, score = greeedy_bipartite(weight_matrix)
+        
         if self.bipartite:
             res = sorted(row.union(col))
         else:
@@ -30,19 +31,38 @@ class Fraudar(DMmodel):
     def save(self, outpath):
         pass
 
-def log_weighted_col(graph:csr_matrix, eps=5):
+def log_weighted_col(graph:csr_matrix, method="log", eps=5):
     # M: scipy sparse matrix
     m, n = graph.shape
     col_sums = graph.sum(axis=0)
-    col_weights = 1.0 / np.log(np.squeeze(col_sums.A) + eps)
+    if method == "log":
+        col_weights = 1.0 / np.log(np.squeeze(col_sums.A) + eps)
+    else:
+        col_weights = 1.0 / np.sqrt(np.squeeze(col_sums.A) + eps)
     col_diag = lil_matrix((n, n))
     col_diag.setdiag(col_weights)
     return graph * col_diag
 
-def log_weighted_row(graph:csr_matrix, eps=5):
+""" 加速版本
+def log_weighted_col(graph: csr_matrix, method="log", eps=5):
+    
+    col_sums = np.asarray(graph.sum(axis=0)).ravel()
+
+    if method == "log":
+        col_weights = 1.0 / np.log(col_sums + eps)
+    else:
+        col_weights = 1.0 / np.sqrt(col_sums + eps)
+    
+    return graph @ diags(col_weights)
+"""
+
+def log_weighted_row(graph:csr_matrix, method="log", eps=5):
     m, n = graph.shape
     row_sums = graph.sum(axis=1)
-    row_weights = 1.0 / np.log(np.squeeze(row_sums.A) + eps)
+    if method == "log":
+        row_weights = 1.0 / np.log(np.squeeze(row_sums.A) + eps)
+    else:
+        row_weights = 1.0 / np.sqrt(np.squeeze(row_sums.A) + eps)
     row_diag = lil_matrix((m, m))
     row_diag.setdiag(row_weights)
     return graph * row_diag
