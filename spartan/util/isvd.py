@@ -1,22 +1,22 @@
 import numpy as np
 from scipy.sparse.linalg import LinearOperator
 
-def incremental_svd(A, u, s, vh, n_iter=5):
+def incremental_svd(A, u, s, vh, n_iter=5, k=1):
     """
-    增量式SVD - 不显式计算残差矩阵
+    Incremental SVD computation without explicitly constructing the residual matrix.
     
-    参数:
-    A: 原始矩阵 (m x n) 或能计算A @ x和A.T @ y的函数
-    u: 前k个左奇异向量 (m x k)
-    s: 前k个奇异值 (长度为k的向量)
-    vh: 前k个右奇异向量 (k x n)
-    k: 当前已知的奇异值数量
-    n_iter: 幂迭代次数
-    
-    返回:
-    u_new: 包含第k+1个左奇异向量的矩阵 (m x (k+1))
-    s_new: 包含第k+1个奇异值的向量 (长度为k+1)
-    vh_new: 包含第k+1个右奇异向量的矩阵 ((k+1) x n)
+    Args:
+        A: Original matrix (m x n) or a function that can compute A @ x and A.T @ y
+        u: Left singular vectors (m x k) for the first k components
+        s: Singular values (length-k vector) for the first k components
+        vh: Right singular vectors (k x n) for the first k components
+        n_iter: Number of power iterations for approximation
+        k: Number of singular vectors to compute (k+1-th component)
+        
+    Returns:
+        u_new: Updated left singular vectors (m x (k+1)) including the (k+1)-th component
+        s_new: Updated singular values (length-(k+1) vector
+        vh_new: Updated right singular vectors ((k+1) x n)
     """
     m, n = A.shape if hasattr(A, 'shape') else (len(u), vh.shape[1])
     
@@ -26,8 +26,11 @@ def incremental_svd(A, u, s, vh, n_iter=5):
     def R_rmatvec(y):
         return A.T @ y - vh.T @ (np.diag(s) @ (u.T @ y))
     
+    # Create linear operator for the residual matrix
     R = LinearOperator((m, n), matvec=R_matvec, rmatvec=R_rmatvec)
-    u1, s1, vh1 = power_iteration(R, n_iter=n_iter)
+    
+    # Compute the next singular triplet using power iteration
+    u1, s1, vh1 = power_iteration(R, n_iter=n_iter, k=k)
     
     u_new = np.hstack([u, u1])
     s_new = np.concatenate([s, s1])
@@ -35,23 +38,36 @@ def incremental_svd(A, u, s, vh, n_iter=5):
     
     return u_new, s_new, vh_new
 
-def power_iteration(A, n_iter=5, k=1):
+def power_iteration(A:LinearOperator, n_iter=5, k=1):
     """
-    幂迭代法计算矩阵的前k个奇异向量，适用于LinearOperator或普通矩阵
+    Power iteration method for computing top-k singular vectors.
+    Works with both LinearOperator and regular matrices.
+    
+    Args:
+        A: Input matrix or linear operator
+        n_iter: Number of iterations
+        k: Number of singular vectors to compute
+        
+    Returns:
+        u: Left singular vectors (m x k)
+        s: Singular values (length-k vector)
+        vh: Right singular vectors (k x n)
     """
     m, n = A.shape if hasattr(A, 'shape') else A.size
+    
+    # Initialize random starting vectors
     v = np.random.randn(n, k)
     v, _ = np.linalg.qr(v)
     
+    # Power iterations
     for _ in range(n_iter):
-        # 计算A^T A v ≈ σ^2 v
         u = A.matvec(v)
         u, _ = np.linalg.qr(u)
         
         v = A.T @ u
         v, _ = np.linalg.qr(v)
     
-    # 计算奇异值
+    # Compute singular values
     Av = A @ v
     s = np.linalg.norm(Av, axis=0)
     u = Av / s
