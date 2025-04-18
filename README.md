@@ -27,9 +27,9 @@ in a wide range of
 and 
 - **biological networks**, e.g. *gene regulatory network (GRN), protein-protein interaction network, and disease transmission network*.
 
-In practice, we find that thinking graphs and time series as matrices or tensors
+In practice, we find that thinking graphs or tensors
 can enable us to find *efficient (near linear)*, *interpretable*, yet *accurate* solutions in many applications.
-Therefore, our **goal** is developping a collectioin of algorithms on graphs and time series based
+Therefore, our **goal** is developping a collectioin of algorithms on graphs based
 on **tensors** (matrix is a 2-mode tensor).
 
 In real world, those tensors are *sparse*, and we
@@ -147,6 +147,3 @@ We suggest recreating the experimental environment using Anaconda through the fo
 11. <span id="ref11"></span> Sun, Xiaobing, Jiabao Zhang, Qiming Zhao, Shenghua Liu, Jinglei Chen, Ruoyu Zhuang, Huawei Shen, and Xueqi Cheng. "CubeFlow: Money Laundering Detection with Coupled Tensors." In Pacific-Asia Conference on Knowledge Discovery and Data Mining, pp. 78-90. Springer, Cham, 2021.
 12. <span id="ref12"></span> Feng, Wenjie, Shenghua Liu, Danai Koutra, Huawei Shen, and Xueqi Cheng. "Specgreedy: unified dense subgraph detection." In Joint European Conference on Machine Learning and Knowledge Discovery in Databases, pp. 181-197. Springer, Cham, 2020.
 13. <span id="ref13"></span> Sun, Xiaobing, Wenjie Feng, Shenghua Liu, Yuyang Xie, Siddharth Bhatia, Bryan Hooi, Wenhan Wang, and Xueqi Cheng. "MonLAD: Money Laundering Agents Detection in Transaction Streams." arXiv preprint arXiv:2201.10051 (2022).
-14. <span id="ref14"></span> Bryan Hooi, Shenghua Liu, Asim Smailagic, and Christos Faloutsos, “BEATLEX: Summarizing and Forecasting Time Series with Patterns,” The European Conference on Machine Learning & Principles and Practice of Knowledge Discovery in Databases (ECML-PKDD), Skopje, Macedonia, 2017.
-15. <span id="ref15"></span> Zhou, Bin, Shenghua Liu, Bryan Hooi, Xueqi Cheng, and Jing Ye. "BeatGAN: Anomalous Rhythm Detection using Adversarially Generated Time Series." In IJCAI, pp. 4433-4439. 2019.
-16. <span id="ref16"></span> Liu, Shenghua, Bin Zhou, Quan Ding, Bryan Hooi, Zheng bo Zhang, Huawei Shen, and Xueqi Cheng. "Time Series Anomaly Detection with Adversarial Reconstruction Networks." IEEE Transactions on Knowledge and Data Engineering (2022).
