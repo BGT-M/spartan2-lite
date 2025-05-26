@@ -35,10 +35,10 @@ on **tensors** (matrix is a 2-mode tensor).
 In real world, those tensors are *sparse*, and we
 are required to make use of the sparsity to develop efficient algorithms. 
 That is why we name the package as
-**spartan**: **spar**se **t**ensor **an**alytics.
+**spartan2-lite**: the lite version of **spar**se **t**ensor **an**alytics.
 
-The package named **spartan** can be imported and run independently as a *usual python package*.
-Everything in package **spartan** is viewed as a tensor (sparse).
+The package named **spartan2-lite** can be imported and run independently as a *usual python package*.
+Everything in package **spartan2-lite** is viewed as a tensor (sparse).
 
 ## Install requirements
 
