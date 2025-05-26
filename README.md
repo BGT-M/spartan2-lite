@@ -25,7 +25,7 @@ in a wide range of
 - **finance**, e.g. *stock tradings, and bank transfers*, 
 - **sensor networks**, e.g. *sensor readings, and smart power grid*,
 and 
-- **health**, e.g. *electrocardiogram, photoplethysmogram, and respiratory inductance plethysmography*.
+- **biological networks**, e.g. *gene regulatory network (GRN), protein-protein interaction network, and disease transmission network*.
 
 In practice, we find that thinking graphs as matrices or tensors
 can enable us to find *efficient (near linear)*, *interpretable*, yet *accurate* solutions in many applications.
