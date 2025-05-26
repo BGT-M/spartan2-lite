@@ -49,14 +49,14 @@ We suggest recreating the experimental environment using Anaconda through the fo
 
 2. Create a new conda environment named "spartan"
     ```bash
-        conda create -n spartan python=3.7
-        conda activate spartan
+        conda create -n spartan2-lite python=3.7
+        conda activate spartan2-lite
     ```
 
 3. If you are a normal **USER**,
     ```bash
-    # install spartan using pip
-    pip install spartan2
+    # install spartan2-lite using pip
+    pip install spartan2-lite
     ```
 
 
